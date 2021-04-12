@@ -18,6 +18,7 @@
 		7902A73A261D7BB9008326EE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902A739261D7BB9008326EE /* TabBarController.swift */; };
 		7902A73D261D7C9B008326EE /* EqpMasSubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */; };
 		7902A744261D7E3F008326EE /* EqpMasSubExpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */; };
+		790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790E1C87261FE46C0080D402 /* EqpInspEntity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		7902A739261D7BB9008326EE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpMasSubViewController.swift; sourceTree = "<group>"; };
 		7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpMasSubExpViewController.swift; sourceTree = "<group>"; };
+		790E1C87261FE46C0080D402 /* EqpInspEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpInspEntity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,17 +71,42 @@
 				7902A718261D71A7008326EE /* AppDelegate.swift */,
 				7902A71A261D71A7008326EE /* SceneDelegate.swift */,
 				7902A71E261D71A7008326EE /* Main.storyboard */,
-				7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */,
-				7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */,
-				7902A739261D7BB9008326EE /* TabBarController.swift */,
-				7902A72E261D72BF008326EE /* EqpItemSubViewController.swift */,
-				7902A732261D753E008326EE /* EqpItemSubExpViewController.swift */,
+				790E1CB5262013520080D402 /* Model */,
+				790E1CB62620137E0080D402 /* View */,
+				790E1CB7262013A80080D402 /* Controller */,
 				7902A721261D71A9008326EE /* Assets.xcassets */,
 				7902A723261D71A9008326EE /* LaunchScreen.storyboard */,
 				7902A726261D71A9008326EE /* Info.plist */,
-				7902A735261D772E008326EE /* EqpInspSingleton.swift */,
 			);
 			path = EqpInspApp;
+			sourceTree = "<group>";
+		};
+		790E1CB5262013520080D402 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				790E1C87261FE46C0080D402 /* EqpInspEntity.swift */,
+				7902A735261D772E008326EE /* EqpInspSingleton.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		790E1CB62620137E0080D402 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */,
+				7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */,
+				7902A72E261D72BF008326EE /* EqpItemSubViewController.swift */,
+				7902A732261D753E008326EE /* EqpItemSubExpViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		790E1CB7262013A80080D402 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7902A739261D7BB9008326EE /* TabBarController.swift */,
+			);
+			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +184,7 @@
 				7902A733261D753E008326EE /* EqpItemSubExpViewController.swift in Sources */,
 				7902A72F261D72BF008326EE /* EqpItemSubViewController.swift in Sources */,
 				7902A719261D71A7008326EE /* AppDelegate.swift in Sources */,
+				790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */,
 				7902A73A261D7BB9008326EE /* TabBarController.swift in Sources */,
 				7902A736261D772E008326EE /* EqpInspSingleton.swift in Sources */,
 				7902A71B261D71A7008326EE /* SceneDelegate.swift in Sources */,

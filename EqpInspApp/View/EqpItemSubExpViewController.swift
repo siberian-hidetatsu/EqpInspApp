@@ -22,6 +22,87 @@ class EqpItemSubExpViewController: UIViewController {
     }
     
     func GetData() {
+        let x = 10, width = 200, height = 20
+        var y = 100
+        
+        textView.text = ""
+
+        for eqpInspItem in EqpInspSingleton.shared.eqpInspItems {
+            if eqpInspItem.ItemCode != itemcode {
+                continue
+            }
+            
+            for eqpInspSubItem in eqpInspItem.EqpInspSubItems {
+                if eqpInspSubItem.SeqNum != seqnum {
+                    continue
+                }
+                
+                let itemNameLabel = UILabel()
+                itemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
+                itemNameLabel.text = eqpInspItem.ItemName
+                itemNameLabel.font = UIFont.boldSystemFont(ofSize: 16)
+                view.addSubview(itemNameLabel)
+                            
+                y += 20
+                let subItemNameLabel = UILabel()
+                subItemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
+                subItemNameLabel.text = eqpInspSubItem.SubItemName
+                view.addSubview(subItemNameLabel)
+                
+                y += 20
+                let judgementCriteriaLabel = UILabel()
+                judgementCriteriaLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
+                judgementCriteriaLabel.text = eqpInspSubItem.JudgementCriteria
+                view.addSubview(judgementCriteriaLabel)
+                
+                y += 20
+                let inspectionPointLabel = UILabel()
+                inspectionPointLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
+                inspectionPointLabel.text = eqpInspSubItem.InspectionPoint
+                inspectionPointLabel.textColor = UIColor.blue
+                view.addSubview(inspectionPointLabel)
+                
+                if !inspectionPointLabel.text!.isEmpty {
+                    y += 20
+                }
+                
+                y += 20
+                let befTitleLabel = UILabel()
+                befTitleLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
+                befTitleLabel.text = eqpInspSubItem.BefTitle
+                view.addSubview(befTitleLabel)
+                
+                let aftTitleLabel = UILabel()
+                aftTitleLabel.frame = CGRect(x: x + 200, y: y, width: width / 2, height: height)
+                aftTitleLabel.text = eqpInspSubItem.AftTitle
+                view.addSubview(aftTitleLabel)
+                            
+                for eqpInspSubExpItem in eqpInspSubItem.EqpInspSubExpItems {
+                    y += 20
+                    let itemLabelLabel = UILabel()
+                    itemLabelLabel.frame = CGRect(x: x, y: y, width: width / 2, height: height)
+                    itemLabelLabel.text = eqpInspSubExpItem.ItemLabel
+                    view.addSubview(itemLabelLabel)
+            
+                    let befValueLabel = UILabel()
+                    befValueLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
+                    befValueLabel.text = eqpInspSubExpItem.BefValue
+                    view.addSubview(befValueLabel)
+            
+                    let aftValueLabel = UILabel()
+                    aftValueLabel.frame = CGRect(x: x + 200, y: y, width: width / 2, height: height)
+                    aftValueLabel.text = eqpInspSubExpItem.AftValue
+                    view.addSubview(aftValueLabel)
+                }
+        
+                y += 20
+                SetResultLabel(x: x + 100, y: y, width: width / 2, height: height, result: eqpInspSubItem.BefResult)
+                SetResultLabel(x: x + 200, y: y, width: width / 2, height: height, result: eqpInspSubItem.AftResult)
+            }
+        }
+    }
+    /* 受信データが階層化されてない場合
+    func GetData() {
         var count = 0
         var befResult:String = ""
         var aftResult:String = ""
@@ -111,8 +192,8 @@ class EqpItemSubExpViewController: UIViewController {
         SetResultLabel(x: x + 200, y: y, width: width / 2, height: height, result: aftResult)
 
         /*textView.text += "\(befResult)　　\(aftResult)"*/
-    }
-    
+    }*/
+
     func SetResultLabel(x:Int, y:Int, width:Int, height:Int, result:String)
     {
         let resultLabel = UILabel()

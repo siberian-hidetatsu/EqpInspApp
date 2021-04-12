@@ -7,6 +7,16 @@
 
 import UIKit
 
+struct EqpInspSubItemCellData {
+    var EqpType:String?
+    var ItemCode:String?
+    //var ItemName:String?
+    var SeqNum:String?
+    var SubItemName:String?
+    var JudgementCriteria:String?
+    var InspectionPoint:String?
+}
+
 class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
     @IBOutlet weak var eqpType: UITextField!
     @IBOutlet weak var eqpID: UITextField!
@@ -16,11 +26,23 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
     @IBOutlet weak var textView: UITextView!
     
     var resultText : String = ""
+    
+    /* セクションを使用しない場合
     var coupons: [[String: String]] = [] { //パースした[String: String]型のクーポンデータを格納するメンバ変数
         didSet{
             self.tableView.reloadData()
         }
+    }*/
+    
+    // 【Swift】複数の section がある tableView で二次元配列を使う。
+    // https://qiita.com/BMJr/items/ca7bcf76d36acbdef75e
+    var mySections: [String] = [] {
+        didSet {
+            self.tableView.reloadData()
+        }
     }
+    
+    var twoDimArray = [[EqpInspSubItemCellData]]()
     
     var judgementCriteriaSize = CGSize(width: 123, height: 29)
 
@@ -34,22 +56,30 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         eqpType.text = "DEB_T6577"
         eqpID.text = "e20200403"
         date.text = "20200403"
+        //eqpID.text = "e20062415"
+        //date.text = "20200624"
         interval.text = "D"
         
-        /*eqpType.text = "T5588+M6300_D"
+        eqpType.text = "T5588+M6300_D"
         eqpID.text = "e08191000"
         date.text = "20200819"
-        interval.text = "D"*/
+        interval.text = "D"
         
         textView.text = ""
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        /*return 1*/
+        return mySections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.coupons.count
+        /*return self.coupons.count*/
+        return twoDimArray[section].count
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return mySections[section]
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -60,8 +90,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         // SwiftのTableViewCellを使ってTableViewを自由にカスタマイズ
         let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath)
         
-        //辞書型変数のcouponを定義
-        let coupon = self.coupons[indexPath.row]
+        /*//辞書型変数のcouponを定義
+        let coupon = self.coupons[indexPath.row]*/
         
         cell.textLabel?.font = UIFont(name: "Arial", size: 20)
         cell.detailTextLabel?.font = UIFont(name: "Arial", size: 20)
@@ -78,6 +108,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         cell.detailTextLabel?.text = "生年月日：" + birthDay/*(coupon["BirthDay"] as! String)*/
         */
         
+        /* セクションを使用しない場合
         // 動的にセルを追加する場合
         //cell.textLabel?.text = coupon["ItemName"] as? String
         //cell.detailTextLabel?.text = coupon["SubItemName"] as? String
@@ -95,6 +126,32 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         inspectionPointLabel.text = ""
         if !coupon["InspectionPoint"]!.isEmpty {
             inspectionPointLabel.text = coupon["InspectionPoint"]
+            judgementCriteriaLabel.frame.size = CGSize(width: judgementCriteriaSize.width, height: judgementCriteriaSize.height)
+        }
+        else {
+            judgementCriteriaLabel.frame.size = CGSize(width: judgementCriteriaSize.width + inspectionPointLabel.frame.width, height: judgementCriteriaSize.height)
+        }*/
+        
+        let eqpInspSubItemCellData:EqpInspSubItemCellData = twoDimArray[indexPath.section][indexPath.row]
+        
+        (cell.viewWithTag(1) as! UILabel).isHidden = true
+        
+        let subItemNameLabel = cell.viewWithTag(2) as! UILabel
+        subItemNameLabel.text = eqpInspSubItemCellData.SubItemName
+        subItemNameLabel.frame = CGRect(x: subItemNameLabel.frame.origin.x, y: 12, width: subItemNameLabel.frame.width, height: subItemNameLabel.frame.height)
+
+        let judgementCriteriaLabel = cell.viewWithTag(3) as! UILabel
+        judgementCriteriaLabel.frame = CGRect(x: judgementCriteriaLabel.frame.origin.x, y: 38, width: judgementCriteriaLabel.frame.width, height: judgementCriteriaLabel.frame.height)
+        judgementCriteriaLabel.text = ""
+        if !eqpInspSubItemCellData.JudgementCriteria!.isEmpty {
+            judgementCriteriaLabel.text = "(" + eqpInspSubItemCellData.JudgementCriteria! + ")"
+        }
+
+        let inspectionPointLabel = cell.viewWithTag(4) as! UILabel
+        inspectionPointLabel.frame = CGRect(x: inspectionPointLabel.frame.origin.x, y: 38, width: inspectionPointLabel.frame.width, height: inspectionPointLabel.frame.height)
+        inspectionPointLabel.text = ""
+        if !eqpInspSubItemCellData.InspectionPoint!.isEmpty {
+            inspectionPointLabel.text = eqpInspSubItemCellData.InspectionPoint
             judgementCriteriaLabel.frame.size = CGSize(width: judgementCriteriaSize.width, height: judgementCriteriaSize.height)
         }
         else {
@@ -134,6 +191,108 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 //let object = try JSONSerialization.jsonObject(with: data, options: [])  // DataをJsonに変換
                 //print(object)
                 
+                /* json の読み込み確認
+                // Codableを使ったJSONのパース
+                // https://teratail.com/questions/141524
+                let jsonString = """
+                [{
+                "EqpInspSubItems":
+                  [{"EqpInspSubExpItems":
+                    [{"ExpSeqNum":"1","ItemLabel":"値1","BefValue":"","AftValue":""}
+                    ],
+                    "SeqNum":"1",
+                    "SubItemName":"温度",
+                    "JudgementCriteria":"25℃ ± 5℃",
+                    "InspectionPoint":"",
+                    "BefTitle":"-hidden-",
+                    "AftTitle":"調整後",
+                    "BefResult":"",
+                    "AftResult":"-"}
+                  ],
+                  "EqpType":"DEB_T6577",
+                  "ItemCode":"00102",
+                  "ItemName":"設置環境・測定結果"
+                }]
+                """
+
+                let jsonData = jsonString.data(using: .utf8)!
+
+                do {
+                    let ss = try JSONDecoder().decode([EqpInsp.EqpInspItem].self, from: jsonData)
+                    print(ss)
+                    
+                } catch {
+                    print(error.localizedDescription)
+                }
+                */
+                
+                var eqpInspItems:[EqpInsp.EqpInspItem] = []
+                
+                do {
+                    eqpInspItems = try JSONDecoder().decode([EqpInsp.EqpInspItem].self, from: data)
+                    print(eqpInspItems)
+                /*} catch let error as NSError {
+                    print("【エラーが発生しました : \(error)】")
+                }*/
+                } catch {
+                    print(error.localizedDescription)
+                    throw NSError(domain: error.localizedDescription, code: -1, userInfo: nil)
+                }
+
+                // シングルトンにデータを格納する
+                EqpInspSingleton.shared.eqpInspItems = eqpInspItems
+
+                /* セクションを使用しない場合
+                var _couponData:[[String:String]] = []
+                
+                for eqpInspItem in eqpInspItems {
+                    for eqpInspSubItem in eqpInspItem.EqpInspSubItems {
+                        var item:[String:String]
+                        item = [
+                            "EqpType":"\(eqpInspItem.EqpType)",
+                            "ItemCode":"\(eqpInspItem.ItemCode)",
+                            "ItemName":"\(eqpInspItem.ItemName)",
+                            "SeqNum":"\(eqpInspSubItem.SeqNum)",
+                            "SubItemName":"\(eqpInspSubItem.SubItemName)",
+                            "JudgementCriteria":"\(eqpInspSubItem.JudgementCriteria)",
+                            "InspectionPoint":"\(eqpInspSubItem.InspectionPoint)"
+                        ]
+                        
+                        _couponData.append(item)
+                    }
+                }*/
+                
+                var _mySections:[String] = []
+                
+                for eqpInspItem in eqpInspItems {
+                    _mySections.append(eqpInspItem.ItemName)
+                    
+                    // Swiftで多次元配列を使う場合
+                    // https://qiita.com/sassywind/items/9282b63f51d85f58c3e5
+                    self.twoDimArray.append([EqpInspSubItemCellData]())
+                    
+                    for eqpInspSubItem in eqpInspItem.EqpInspSubItems {
+                        var eqpInspSubItemCellData = EqpInspSubItemCellData()
+                        eqpInspSubItemCellData.EqpType = eqpInspItem.EqpType
+                        eqpInspSubItemCellData.ItemCode = eqpInspItem.ItemCode
+                        eqpInspSubItemCellData.SeqNum = eqpInspSubItem.SeqNum
+                        eqpInspSubItemCellData.SubItemName = eqpInspSubItem.SubItemName
+                        eqpInspSubItemCellData.JudgementCriteria  = eqpInspSubItem.JudgementCriteria
+                        eqpInspSubItemCellData.InspectionPoint = eqpInspSubItem.InspectionPoint
+                        
+                        self.twoDimArray[_mySections.count - 1].append(eqpInspSubItemCellData)
+                    }
+                }
+                
+                DispatchQueue.main.async() { () -> Void in
+                    //self.coupons = couponData
+                    /*self.coupons = _couponData*/
+                    //self.tableView.reloadData()
+                    
+                    self.mySections = _mySections
+                }
+                
+                /* 受信データが階層化されてない場合
                 // swiftで配列型のJSONから値を取り出す
                 // https://qiita.com/Ajyarimochi/items/50cdc57f898b79cfb48e
                 
@@ -171,7 +330,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                     self.coupons = _couponData
                     //self.tableView.reloadData()
                 }
-            
+                */
+                
                 /* UITextView で表示する場合
                 self.resultText = ""
                 for item in couponData {
@@ -206,10 +366,15 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                     fatalError("Failed to prepare DetailViewController.")
                 }
                 
+                /* セクションを使用しない場合
                 //destination.eqpItemSubEx.eqpType = coupons[indexPath.row]
                 destination.eqptype = coupons[indexPath.row]["EqpType"]
                 destination.itemcode = coupons[indexPath.row]["ItemCode"]
-                destination.seqnum = coupons[indexPath.row]["SeqNum"]
+                destination.seqnum = coupons[indexPath.row]["SeqNum"]*/
+                
+                destination.eqptype = twoDimArray[indexPath.section][indexPath.row].EqpType
+                destination.itemcode = twoDimArray[indexPath.section][indexPath.row].ItemCode
+                destination.seqnum = twoDimArray[indexPath.section][indexPath.row].SeqNum
             }
         }
     }

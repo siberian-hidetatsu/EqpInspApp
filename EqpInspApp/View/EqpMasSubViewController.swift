@@ -29,7 +29,7 @@ class EqpMasSubViewController: UIViewController,UITableViewDataSource,UITableVie
         tableView.dataSource = self
         
         eqpType.text = "DEB_T6577"
-        //eqpType.text = "INSPECTRA EXⅡ"
+        eqpType.text = "INSPECTRA EXⅡ"
         
         textView.text = ""
     }

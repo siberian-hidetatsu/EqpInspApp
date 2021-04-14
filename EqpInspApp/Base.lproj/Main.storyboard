@@ -153,18 +153,25 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pcB-qs-cq7">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <viewLayoutGuide key="contentLayoutGuide" id="RXS-Ba-Ewd"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="6tk-Ht-4qd"/>
+                            </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Arh-tg-2b9"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="J0n-kw-5xr"/>
                     <connections>
+                        <outlet property="scrollView" destination="pcB-qs-cq7" id="sDh-vw-Zrh"/>
                         <outlet property="textView" destination="irA-9d-5j0" id="3gm-k7-VE4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5Fh-RD-Ekt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="310" y="277"/>
+            <point key="canvasLocation" x="308.69565217391306" y="276.5625"/>
         </scene>
         <!--Eqp Item Sub View Controller-->
         <scene sceneID="q7l-Wa-vhV">
@@ -287,6 +294,10 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="MCS-I0-gPf">
+                                <rect key="frame" x="349" y="150" width="37" height="37"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="e39-f8-Ohv"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -296,6 +307,7 @@
                         <outlet property="date" destination="DQL-xK-ncE" id="EXb-zD-Y30"/>
                         <outlet property="eqpID" destination="8eN-py-VxL" id="7wq-gL-ijd"/>
                         <outlet property="eqpType" destination="Xgr-Zy-WX1" id="qLX-oB-7pg"/>
+                        <outlet property="indicator" destination="MCS-I0-gPf" id="vzP-zx-4IP"/>
                         <outlet property="interval" destination="cZ5-ml-SmM" id="YIN-uF-PuM"/>
                         <outlet property="tableView" destination="HUk-gc-4eV" id="4rL-PE-5lK"/>
                         <outlet property="textView" destination="vkO-9u-8Ih" id="6Aj-NJ-QFq"/>
@@ -328,7 +340,7 @@
         <scene sceneID="v6f-e4-cyS">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="F15-53-hjc" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="4o7-Vo-km5"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="list.bullet.rectangle" catalog="system" id="4o7-Vo-km5"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="NOo-T8-sXN">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -347,7 +359,7 @@
         <scene sceneID="1Jb-Ub-DTa">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="fIO-xi-xSb" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="KbR-2f-xl7"/>
+                    <tabBarItem key="tabBarItem" title="Item" image="note.text" catalog="system" id="KbR-2f-xl7"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="C1j-3O-YyT">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -364,6 +376,8 @@
         </scene>
     </scenes>
     <resources>
+        <image name="list.bullet.rectangle" catalog="system" width="128" height="93"/>
+        <image name="note.text" catalog="system" width="128" height="106"/>
         <namedColor name="AccentColor">
             <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

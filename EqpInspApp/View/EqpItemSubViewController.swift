@@ -17,14 +17,21 @@ struct EqpInspSubItemCellData {
     var InspectionPoint:String?
 }
 
-class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
+class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,UIPickerViewDelegate, UIPickerViewDataSource {
+    
     @IBOutlet weak var eqpType: UITextField!
     @IBOutlet weak var eqpID: UITextField!
     @IBOutlet weak var date: UITextField!
     @IBOutlet weak var interval: UITextField!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textView: UITextView!
+    @IBOutlet weak var indicator: UIActivityIndicatorView!
     
+    // UITextField の入力に pickerView を設定する方法
+    // https://hawksnowlog.blogspot.com/2019/11/use-pickerview-as-keyboard-on-textfield.html
+    var pickerView = UIPickerView()
+    var eqpTypeArray = ["Orange", "Grape", "Banana"]/*[String]()*/
+
     var resultText : String = ""
     
     /* セクションを使用しない場合
@@ -60,14 +67,132 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         //date.text = "20200624"
         interval.text = "D"
         
-        eqpType.text = "T5588+M6300_D"
+        /*eqpType.text = "T5588+M6300_D"
         eqpID.text = "e08191000"
         date.text = "20200819"
-        interval.text = "D"
+        interval.text = "D"*/
         
         textView.text = ""
+        
+        //【Swift】 UITextFieldに文字数制限を設ける方法
+        // https://qiita.com/ydzum1123/items/3578a886c70dc23f121c
+        // date の入力チェックをオブザーバ登録
+        NotificationCenter.default.addObserver(self, selector: #selector(textFieldDidChange(notification:)), name: UITextField.textDidChangeNotification, object: date)
+        
+        createPickerView()
+        
+        indicator.center = self.view.center
     }
     
+    //MARK:- 日付のオブザーバ
+    // オブザーバの破棄
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    @objc func textFieldDidChange(notification: NSNotification) {
+        let textField = notification.object as! UITextField
+        
+        if let text = textField.text {
+            print(text.count)
+            if text.count == 8 {
+                indicator.startAnimating()
+                
+                //URLを生成
+                let server = "http://192.168.1.9"
+                let application = "WebApplication1"
+                let service = "eqpapi/EqpTypeIds"
+                let _stdate = date.text!
+                let _interval = interval.text!
+                let url = URL(string: "\(server)/\(application)/\(service)/\(_stdate)/\(_interval)")!
+
+                //Requestを生成
+                let request = URLRequest(url: url)
+                let task = URLSession.shared.dataTask(with: request) { (data, response, error) in  //非同期で通信を行う
+                    guard let data = data else { return }
+                    do {
+                        print(data)
+                        
+                        var eqpTypeIds:[EqpInsp.EqpTypeId] = []
+                        
+                        do {
+                            eqpTypeIds = try JSONDecoder().decode([EqpInsp.EqpTypeId].self, from: data)
+                            print(eqpTypeIds)
+                        /*} catch let error as NSError {
+                            print("【エラーが発生しました : \(error)】")
+                        }*/
+                        } catch {
+                            print(error.localizedDescription)
+                            throw NSError(domain: error.localizedDescription, code: -1, userInfo: nil)
+                        }
+                        
+                        self.eqpTypeArray = []
+                        self.eqpTypeArray.append("選択してください")
+
+                        for eqpTypeId in eqpTypeIds {
+                            let value = eqpTypeId.EqpType + ":" + eqpTypeId.EqpId
+                            self.eqpTypeArray.append(value)
+                        }
+                        
+                        DispatchQueue.main.async() { () -> Void in
+                            self.pickerView.selectRow(0, inComponent: 0, animated: false)
+                            self.eqpType.text = self.eqpTypeArray[0]
+                            self.indicator.stopAnimating()
+                        }
+                    } catch let error {
+                        print(error)
+                    }
+                }
+                task.resume()
+            }
+        }
+    }
+    
+    //MARK:- UIPickerView
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        //print("pickerViewCount:\(eqpTypeArray.count)")
+        return eqpTypeArray.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        //print("picerViewRow:\(eqpTypeArray[row])")
+        return eqpTypeArray[row]
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if row != 0 {
+            //eqpType.text = eqpTypeArray[row]
+            //result.text = data[row]
+            let eqpTypeId:[String] = eqpTypeArray[row].components(separatedBy: ":")
+            eqpType.text = eqpTypeId[0]
+            eqpID.text = eqpTypeId[1]
+        }
+    }
+    
+    func createPickerView() {
+        pickerView.delegate = self
+        eqpType.inputView = pickerView
+        // toolbar
+        let toolbar = UIToolbar()
+        toolbar.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 44)
+        let doneButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePicker))
+        toolbar.setItems([doneButtonItem], animated: true)
+        eqpType.inputAccessoryView = toolbar
+    }
+
+    @objc func donePicker() {
+        eqpType.endEditing(true)
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        eqpType.endEditing(true)
+    }
+    
+    //MARK:- UITableView
     func numberOfSections(in tableView: UITableView) -> Int {
         /*return 1*/
         return mySections.count
@@ -165,17 +290,23 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
             return 80
         }
 
+    //MARK:-
     @IBAction func ButtonClick(_ sender: Any) {
         if (eqpType.text == nil) {
             return
         }
+
+        eqpType.endEditing(true)
+
+        indicator.startAnimating()
+        
         //URLを生成
         let server = "http://192.168.1.9"
         let application = "WebApplication1"
         let service = "eqpapi/EqpInspSubLists"
         // Swift で日本語を含む URL を扱う　https://qiita.com/yum_fishing/items/db029c097197e6b27fba
-        var _eqptype = eqpType.text!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
-        //_eqptype = _eqptype.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+        //let _eqptype = eqpType.text!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!
+        let _eqptype = eqpType.text!.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
         let _eqpid = eqpID.text!
         let _stdate = date.text!
         let _interval = interval.text!
@@ -263,6 +394,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 }*/
                 
                 var _mySections:[String] = []
+                self.twoDimArray = [[EqpInspSubItemCellData]]()
                 
                 for eqpInspItem in eqpInspItems {
                     _mySections.append(eqpInspItem.ItemName)
@@ -289,7 +421,12 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                     /*self.coupons = _couponData*/
                     //self.tableView.reloadData()
                     
+                    //self.mySections = []
+                    //self.tableView.reloadData()
+                    
                     self.mySections = _mySections
+                    
+                    self.indicator.stopAnimating()
                 }
                 
                 /* 受信データが階層化されてない場合
@@ -354,7 +491,6 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         task.resume()
     }
     
-
     // Table View からの画面遷移 (Swift)
     // まず、ストーリーボードで Table View 内の AnimalTableViewCell を選択してください。
     // ⌃ Control キーを押しながら Detail View Controller にドラッグして離すと、Segue の種類を選ぶポップアップが出てきますので、Show を選択します。

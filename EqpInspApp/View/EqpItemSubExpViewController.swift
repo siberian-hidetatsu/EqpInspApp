@@ -12,16 +12,41 @@ class EqpItemSubExpViewController: UIViewController {
     var itemcode : String!
     var seqnum: String!
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var textView: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        /*// 画面の大きさ
+        let width = UIScreen.main.bounds.size.width
+        print("screen width : \(width)")
+        let height = UIScreen.main.bounds.size.height
+        print("screen height : \(height)")
 
+        // 実際の画面の大きさ
+        let native_width = UIScreen.main.nativeBounds.size.width
+        print("native width : \(native_width)")
+        let native_height = UIScreen.main.nativeBounds.size.height
+        print("native height : \(native_height)")
+
+        // 拡大率
+        let scale = UIScreen.main.scale
+        print("scale : \(scale)")
+        let native_scale = UIScreen.main.nativeScale
+        print("native scale : \(native_scale)")*/
+        
         // Do any additional setup after loading the view.
         GetData()
     }
     
     func GetData() {
+        // 【徹底解説】UIScrollViewクラス　その1
+        // https://qiita.com/ynakaDream/items/960899183c38949c2ab0
+        // contentsViewを作る
+        let contentsView = UIView()
+        //contentsView.frame = CGRect(x: 0, y: 0, width: 800, height: 1200)
+
         let x = 10, width = 200, height = 20
         var y = 100
         
@@ -41,66 +66,121 @@ class EqpItemSubExpViewController: UIViewController {
                 itemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 itemNameLabel.text = eqpInspItem.ItemName
                 itemNameLabel.font = UIFont.boldSystemFont(ofSize: 16)
-                view.addSubview(itemNameLabel)
-                            
+                contentsView.addSubview(itemNameLabel)
                 y += 20
+                
                 let subItemNameLabel = UILabel()
                 subItemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 subItemNameLabel.text = eqpInspSubItem.SubItemName
-                view.addSubview(subItemNameLabel)
-                
+                contentsView.addSubview(subItemNameLabel)
                 y += 20
+                
                 let judgementCriteriaLabel = UILabel()
                 judgementCriteriaLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 judgementCriteriaLabel.text = eqpInspSubItem.JudgementCriteria
-                view.addSubview(judgementCriteriaLabel)
-                
+                contentsView.addSubview(judgementCriteriaLabel)
                 y += 20
+                
                 let inspectionPointLabel = UILabel()
                 inspectionPointLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 inspectionPointLabel.text = eqpInspSubItem.InspectionPoint
                 inspectionPointLabel.textColor = UIColor.blue
-                view.addSubview(inspectionPointLabel)
-                
+                contentsView.addSubview(inspectionPointLabel)
+                y += 20
+
                 if !inspectionPointLabel.text!.isEmpty {
                     y += 20
                 }
                 
-                y += 20
+                if !eqpInspSubItem.SubItemImg.isEmpty {
+                    let imageData = NSData(base64Encoded: eqpInspSubItem.SubItemImg)
+                    let image = UIImage(data: imageData! as Data)
+                    let subItemImg = UIImageView()
+                    subItemImg.image = resize(image: image!, width: 300)
+                    subItemImg.sizeToFit()
+                    subItemImg.frame = CGRect(x: 0, y: CGFloat(y), width: subItemImg.image!.size.width, height: subItemImg.image!.size.height)
+                    contentsView.addSubview(subItemImg)
+                    
+                    y += (Int(subItemImg.image!.size.height) + 20)
+                }
+                
                 let befTitleLabel = UILabel()
                 befTitleLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
                 befTitleLabel.text = eqpInspSubItem.BefTitle
-                view.addSubview(befTitleLabel)
+                contentsView.addSubview(befTitleLabel)
                 
                 let aftTitleLabel = UILabel()
-                aftTitleLabel.frame = CGRect(x: x + 200, y: y, width: width / 2, height: height)
+                aftTitleLabel.frame = CGRect(x: x + 210, y: y, width: width / 2, height: height)
                 aftTitleLabel.text = eqpInspSubItem.AftTitle
-                view.addSubview(aftTitleLabel)
-                            
+                contentsView.addSubview(aftTitleLabel)
+                y += 21
+
                 for eqpInspSubExpItem in eqpInspSubItem.EqpInspSubExpItems {
-                    y += 20
                     let itemLabelLabel = UILabel()
                     itemLabelLabel.frame = CGRect(x: x, y: y, width: width / 2, height: height)
                     itemLabelLabel.text = eqpInspSubExpItem.ItemLabel
-                    view.addSubview(itemLabelLabel)
+                    contentsView.addSubview(itemLabelLabel)
             
                     let befValueLabel = UILabel()
                     befValueLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
                     befValueLabel.text = eqpInspSubExpItem.BefValue
-                    view.addSubview(befValueLabel)
+                    befValueLabel.layer.borderWidth = 1
+                    befValueLabel.layer.borderColor = UIColor.lightGray.cgColor
+                    contentsView.addSubview(befValueLabel)
             
                     let aftValueLabel = UILabel()
-                    aftValueLabel.frame = CGRect(x: x + 200, y: y, width: width / 2, height: height)
+                    aftValueLabel.frame = CGRect(x: x + 210, y: y, width: width / 2, height: height)
                     aftValueLabel.text = eqpInspSubExpItem.AftValue
-                    view.addSubview(aftValueLabel)
+                    aftValueLabel.layer.borderWidth = 1
+                    aftValueLabel.layer.borderColor = UIColor.lightGray.cgColor
+                    contentsView.addSubview(aftValueLabel)
+                    y += 21
                 }
         
-                y += 20
-                SetResultLabel(x: x + 100, y: y, width: width / 2, height: height, result: eqpInspSubItem.BefResult)
-                SetResultLabel(x: x + 200, y: y, width: width / 2, height: height, result: eqpInspSubItem.AftResult)
+                SetResultLabel(view: contentsView, x: x + 100, y: y, width: width / 2, height: height, result: eqpInspSubItem.BefResult)
+                SetResultLabel(view: contentsView, x: x + 210, y: y, width: width / 2, height: height, result: eqpInspSubItem.AftResult)
+                y += 21
             }
         }
+        
+        // scrollViewにcontentsViewを配置させる
+        var contentsHeight = y
+        let screen_height = UIScreen.main.bounds.size.height
+        print("screen : \(UIScreen.main.bounds.size)")
+        if CGFloat(contentsHeight) > screen_height {
+            contentsHeight += 150
+        }
+        contentsView.frame = CGRect(x: 0, y: 0, width: Int(UIScreen.main.bounds.width), height: contentsHeight)
+        scrollView.addSubview(contentsView)
+
+        // scrollViewにcontentsViewのサイズを教える
+        scrollView.contentSize = contentsView.frame.size
+        //scrollView.contentOffset = CGPoint(x: 0,y: 0)
+        
+        // iOS11 で UIScrollView の contentInsetがずれる問題
+        // https://qiita.com/peka2/items/b6301a0c06cc13286296
+        scrollView.contentInsetAdjustmentBehavior = .never
     }
+    
+    // UIImageをアスペクト比をそのままにリサイズする
+    // https://program-life.com/497
+    func resize(image: UIImage, width: Double) -> UIImage {
+            
+        // オリジナル画像のサイズからアスペクト比を計算
+        let aspectScale = image.size.height / image.size.width
+        
+        // widthからアスペクト比を元にリサイズ後のサイズを取得
+        let resizedSize = CGSize(width: width, height: width * Double(aspectScale))
+        
+        // リサイズ後のUIImageを生成して返却
+        UIGraphicsBeginImageContext(resizedSize)
+        image.draw(in: CGRect(x: 0, y: 0, width: resizedSize.width, height: resizedSize.height))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return resizedImage!
+    }
+    
     /* 受信データが階層化されてない場合
     func GetData() {
         var count = 0
@@ -194,7 +274,7 @@ class EqpItemSubExpViewController: UIViewController {
         /*textView.text += "\(befResult)　　\(aftResult)"*/
     }*/
 
-    func SetResultLabel(x:Int, y:Int, width:Int, height:Int, result:String)
+    func SetResultLabel(view:UIView, x:Int, y:Int, width:Int, height:Int, result:String)
     {
         let resultLabel = UILabel()
         resultLabel.frame = CGRect(x: x, y: y, width: width, height: height)
@@ -215,7 +295,6 @@ class EqpItemSubExpViewController: UIViewController {
         }
         
         view.addSubview(resultLabel)
-
     }
     /*func GetData() {
         //URLを生成

@@ -18,6 +18,7 @@ struct EqpInsp: Codable {
     struct EqpInspSubItem: Codable {
         var SeqNum:String
         var SubItemName:String
+        var SubItemImg:String
         var JudgementCriteria:String
         var InspectionPoint:String
         var BefTitle:String
@@ -32,5 +33,10 @@ struct EqpInsp: Codable {
         var ItemCode:String
         var ItemName:String
         var EqpInspSubItems:[EqpInspSubItem]
+    }
+    
+    struct EqpTypeId: Codable {
+        var EqpType:String
+        var EqpId:String
     }
 }

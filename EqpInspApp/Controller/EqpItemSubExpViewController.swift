@@ -96,7 +96,7 @@ class EqpItemSubExpViewController: UIViewController {
                     let imageData = NSData(base64Encoded: eqpInspSubItem.SubItemImg)
                     let image = UIImage(data: imageData! as Data)
                     let subItemImg = UIImageView()
-                    subItemImg.image = resize(image: image!, width: 300)
+                    subItemImg.image = Resize(image: image!, width: 300)
                     subItemImg.sizeToFit()
                     subItemImg.frame = CGRect(x: 0, y: CGFloat(y), width: subItemImg.image!.size.width, height: subItemImg.image!.size.height)
                     contentsView.addSubview(subItemImg)
@@ -164,8 +164,8 @@ class EqpItemSubExpViewController: UIViewController {
     
     // UIImageをアスペクト比をそのままにリサイズする
     // https://program-life.com/497
-    func resize(image: UIImage, width: Double) -> UIImage {
-            
+    func Resize(image: UIImage, width: Double) -> UIImage {
+        //return image
         // オリジナル画像のサイズからアスペクト比を計算
         let aspectScale = image.size.height / image.size.width
         
@@ -298,7 +298,7 @@ class EqpItemSubExpViewController: UIViewController {
     }
     /*func GetData() {
         //URLを生成
-        let server = "http://192.168.1.9"
+        let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
         let application = "WebApplication1"
         let service = "eqpapi/EqpItemSubExps"
         // Swift で日本語を含む URL を扱う　https://qiita.com/yum_fishing/items/db029c097197e6b27fba

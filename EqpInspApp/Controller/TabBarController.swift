@@ -24,6 +24,7 @@ class TabBarController: UITabBarController {
         
         tabBar.items![0].title = "マスタ"
         tabBar.items![1].title = "履歴"
+        tabBar.items![2].title = "設定"
     }
     
 

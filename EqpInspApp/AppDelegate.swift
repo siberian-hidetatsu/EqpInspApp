@@ -14,6 +14,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // サーバ設定
+        // 【Swift】UserDefaultsの使い方
+        // https://capibara1969.com/2531/
+        let server:String
+        if let _server = UserDefaults.standard.string(forKey: "settings.server") {
+            print(_server)
+            server = _server
+        } else {
+            server = "192.168.1.9"
+        }
+        
+        // タイムアウト設定
+        let timeoutInterval:TimeInterval
+        if let _timeoutInterval = UserDefaults.standard.string(forKey: "settings.timeoutInterval") {
+            print(_timeoutInterval)
+            // How to convert a string to a double
+            // https://www.hackingwithswift.com/example-code/language/how-to-convert-a-string-to-a-double
+            timeoutInterval = (_timeoutInterval as NSString).doubleValue
+        } else {
+            timeoutInterval = 10
+        }
+        
+        EqpInspSingleton.shared.settings.server = server
+        EqpInspSingleton.shared.settings.timeoutInterval = timeoutInterval
         return true
     }
 

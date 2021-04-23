@@ -103,7 +103,7 @@ class EqpMasSubViewController: UIViewController,UITableViewDataSource,UITableVie
             return
         }
         //URLを生成
-        let server = "http://192.168.1.9"
+        let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
         let application = "WebApplication1"
         //let service = "api/Employees"
         let service = "eqpapi/EqpInsps"
@@ -114,10 +114,16 @@ class EqpMasSubViewController: UIViewController,UITableViewDataSource,UITableVie
         let url = URL(string: "\(server)/\(application)/\(service)/\(parameter)")!
 
         //Requestを生成
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = EqpInspSingleton.shared.settings.timeoutInterval!
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in  //非同期で通信を行う
-            guard let data = data else { return }
             do {
+                if error != nil {
+                    print(error!.localizedDescription)
+                    throw NSError(domain: error!.localizedDescription, code: (error! as NSError).code, userInfo: nil)
+                }
+                
+                guard let data = data else { return }
                 print(data)
                 //let object = try JSONSerialization.jsonObject(with: data, options: [])  // DataをJsonに変換
                 //print(object)
@@ -156,6 +162,11 @@ class EqpMasSubViewController: UIViewController,UITableViewDataSource,UITableVie
                 */
             } catch let error {
                 print(error)
+                DispatchQueue.main.sync {
+                    //self.indicator.stopAnimating()
+                    let alert = Util.CreateAlert(title: "通信ERROR", message: error.localizedDescription)
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
         }
         task.resume()

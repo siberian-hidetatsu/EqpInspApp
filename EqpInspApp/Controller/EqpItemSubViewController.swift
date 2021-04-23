@@ -84,7 +84,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         indicator.center = self.view.center
     }
     
-    //MARK:- 日付のオブザーバ
+    //MARK: - 日付のオブザーバ
     // オブザーバの破棄
     deinit {
         NotificationCenter.default.removeObserver(self)
@@ -99,7 +99,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 indicator.startAnimating()
                 
                 //URLを生成
-                let server = "http://192.168.1.9"
+                let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
                 let application = "WebApplication1"
                 let service = "eqpapi/EqpTypeIds"
                 let _stdate = date.text!
@@ -107,10 +107,16 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 let url = URL(string: "\(server)/\(application)/\(service)/\(_stdate)/\(_interval)")!
 
                 //Requestを生成
-                let request = URLRequest(url: url)
+                var request = URLRequest(url: url)
+                request.timeoutInterval = EqpInspSingleton.shared.settings.timeoutInterval!
                 let task = URLSession.shared.dataTask(with: request) { (data, response, error) in  //非同期で通信を行う
-                    guard let data = data else { return }
                     do {
+                        if error != nil {
+                            print(error!.localizedDescription)
+                            throw NSError(domain: error!.localizedDescription, code: (error! as NSError).code, userInfo: nil)
+                        }
+                        
+                        guard let data = data else { return }
                         print(data)
                         
                         var eqpTypeIds:[EqpInsp.EqpTypeId] = []
@@ -123,7 +129,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                         }*/
                         } catch {
                             print(error.localizedDescription)
-                            throw NSError(domain: error.localizedDescription, code: -1, userInfo: nil)
+                            throw NSError(domain: error.localizedDescription, code: (error as NSError).code, userInfo: nil)
                         }
                         
                         self.eqpTypeArray = []
@@ -141,6 +147,12 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                         }
                     } catch let error {
                         print(error)
+                        DispatchQueue.main.sync {
+                            self.indicator.stopAnimating()
+                            let alert = Util.CreateAlert(title: "通信ERROR", message: error.localizedDescription)
+                            self.present(alert, animated: true, completion: nil)
+
+                        }
                     }
                 }
                 task.resume()
@@ -148,7 +160,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         }
     }
     
-    //MARK:- UIPickerView
+    //MARK: - UIPickerView
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -290,7 +302,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
             return 80
         }
 
-    //MARK:-
+    //MARK: -
     @IBAction func ButtonClick(_ sender: Any) {
         if (eqpType.text == nil) {
             return
@@ -301,7 +313,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         indicator.startAnimating()
         
         //URLを生成
-        let server = "http://192.168.1.9"
+        let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
         let application = "WebApplication1"
         let service = "eqpapi/EqpInspSubLists"
         // Swift で日本語を含む URL を扱う　https://qiita.com/yum_fishing/items/db029c097197e6b27fba
@@ -314,10 +326,16 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         let url = URL(string: "\(server)/\(application)/\(service)/\(_eqptype)/\(_eqpid)/\(_stdate)/\(_eddate)/\(_interval)")!
 
         //Requestを生成
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = EqpInspSingleton.shared.settings.timeoutInterval!
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in  //非同期で通信を行う
-            guard let data = data else { return }
             do {
+                if error != nil {
+                    print(error!.localizedDescription)
+                    throw NSError(domain: error!.localizedDescription, code: (error! as NSError).code, userInfo: nil)
+                }
+                
+                guard let data = data else { return }
                 print(data)
                 //let object = try JSONSerialization.jsonObject(with: data, options: [])  // DataをJsonに変換
                 //print(object)
@@ -367,7 +385,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 }*/
                 } catch {
                     print(error.localizedDescription)
-                    throw NSError(domain: error.localizedDescription, code: -1, userInfo: nil)
+                    throw NSError(domain: error.localizedDescription, code: (error as NSError).code, userInfo: nil)
                 }
 
                 // シングルトンにデータを格納する
@@ -486,6 +504,18 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 */
             } catch let error {
                 print(error)
+                DispatchQueue.main.sync {
+                    self.indicator.stopAnimating()
+                    /*// Swiftのエラー処理をちょいとまとめた
+                    // https://tkgstrator.work/?p=28598
+                    let message:String = String(error.localizedDescription)
+                    let alert = UIAlertController(title: "通信ERROR", message: message, preferredStyle: .alert)
+                    let defaultAction = UIAlertAction(title: "OK", style: .default, handler:nil)
+                    alert.addAction(defaultAction)
+                    self.present(alert, animated: true, completion: nil)*/
+                    let alert = Util.CreateAlert(title: "通信ERROR", message: error.localizedDescription)
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
         }
         task.resume()

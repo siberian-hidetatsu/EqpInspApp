@@ -19,7 +19,7 @@ class EqpMasSubExpViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         //URLを生成
-        let server = "http://192.168.1.9"
+        let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
         let application = "WebApplication1"
         let service = "eqpapi/EqpItemSubExps"
         // Swift で日本語を含む URL を扱う　https://qiita.com/yum_fishing/items/db029c097197e6b27fba
@@ -27,10 +27,16 @@ class EqpMasSubExpViewController: UIViewController {
         let url = URL(string: "\(server)/\(application)/\(service)/\(_eqptype)/\(itemcode!)/\(seqnum!)")!
 
         //Requestを生成
-        let request = URLRequest(url: url)
+        var request = URLRequest(url: url)
+        request.timeoutInterval = EqpInspSingleton.shared.settings.timeoutInterval!
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in  //非同期で通信を行う
-            guard let data = data else { return }
             do {
+                if error != nil {
+                    print(error!.localizedDescription)
+                    throw NSError(domain: error!.localizedDescription, code: (error! as NSError).code, userInfo: nil)
+                }
+                
+                guard let data = data else { return }
                 print(data)
                 //let object = try JSONSerialization.jsonObject(with: data, options: [])  // DataをJsonに変換
                 //print(object)
@@ -68,6 +74,11 @@ class EqpMasSubExpViewController: UIViewController {
                 }
             } catch let error {
                 print(error)
+                DispatchQueue.main.sync {
+                    //self.indicator.stopAnimating()
+                    let alert = Util.CreateAlert(title: "通信ERROR", message: error.localizedDescription)
+                    self.present(alert, animated: true, completion: nil)
+                }
             }
         }
         task.resume()

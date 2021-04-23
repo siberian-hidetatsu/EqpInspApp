@@ -13,4 +13,6 @@ class EqpInspSingleton {
     var eqpInspItems: [EqpInsp.EqpInspItem] = []
     /* 受信データが階層化されてない場合
     var expitemdatas: [[String: String]] = []*/
+    
+    var settings:Settings = Settings()
 }

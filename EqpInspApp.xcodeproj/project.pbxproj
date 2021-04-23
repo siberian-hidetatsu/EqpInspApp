@@ -19,6 +19,9 @@
 		7902A73D261D7C9B008326EE /* EqpMasSubViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */; };
 		7902A744261D7E3F008326EE /* EqpMasSubExpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */; };
 		790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790E1C87261FE46C0080D402 /* EqpInspEntity.swift */; };
+		7939517E26310BA0003D6E69 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7939517D26310BA0003D6E69 /* SettingsViewController.swift */; };
+		7939518126310DD7003D6E69 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7939518026310DD7003D6E69 /* Settings.swift */; };
+		796411ED26324CE200E194D6 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796411EC26324CE200E194D6 /* Alert.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +39,9 @@
 		7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpMasSubViewController.swift; sourceTree = "<group>"; };
 		7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpMasSubExpViewController.swift; sourceTree = "<group>"; };
 		790E1C87261FE46C0080D402 /* EqpInspEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpInspEntity.swift; sourceTree = "<group>"; };
+		7939517D26310BA0003D6E69 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		7939518026310DD7003D6E69 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		796411EC26324CE200E194D6 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,10 +76,10 @@
 			children = (
 				7902A718261D71A7008326EE /* AppDelegate.swift */,
 				7902A71A261D71A7008326EE /* SceneDelegate.swift */,
-				7902A71E261D71A7008326EE /* Main.storyboard */,
 				790E1CB5262013520080D402 /* Model */,
-				790E1CB62620137E0080D402 /* View */,
 				790E1CB7262013A80080D402 /* Controller */,
+				790E1CB62620137E0080D402 /* View */,
+				796411EB26324CA500E194D6 /* Utility */,
 				7902A721261D71A9008326EE /* Assets.xcassets */,
 				7902A723261D71A9008326EE /* LaunchScreen.storyboard */,
 				7902A726261D71A9008326EE /* Info.plist */,
@@ -86,6 +92,7 @@
 			children = (
 				790E1C87261FE46C0080D402 /* EqpInspEntity.swift */,
 				7902A735261D772E008326EE /* EqpInspSingleton.swift */,
+				7939518026310DD7003D6E69 /* Settings.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -93,10 +100,7 @@
 		790E1CB62620137E0080D402 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */,
-				7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */,
-				7902A72E261D72BF008326EE /* EqpItemSubViewController.swift */,
-				7902A732261D753E008326EE /* EqpItemSubExpViewController.swift */,
+				7902A71E261D71A7008326EE /* Main.storyboard */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -105,8 +109,21 @@
 			isa = PBXGroup;
 			children = (
 				7902A739261D7BB9008326EE /* TabBarController.swift */,
+				7902A73C261D7C9B008326EE /* EqpMasSubViewController.swift */,
+				7902A743261D7E3F008326EE /* EqpMasSubExpViewController.swift */,
+				7902A72E261D72BF008326EE /* EqpItemSubViewController.swift */,
+				7902A732261D753E008326EE /* EqpItemSubExpViewController.swift */,
+				7939517D26310BA0003D6E69 /* SettingsViewController.swift */,
 			);
 			path = Controller;
+			sourceTree = "<group>";
+		};
+		796411EB26324CA500E194D6 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				796411EC26324CE200E194D6 /* Alert.swift */,
+			);
+			path = Utility;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,11 +199,14 @@
 				7902A744261D7E3F008326EE /* EqpMasSubExpViewController.swift in Sources */,
 				7902A73D261D7C9B008326EE /* EqpMasSubViewController.swift in Sources */,
 				7902A733261D753E008326EE /* EqpItemSubExpViewController.swift in Sources */,
+				7939517E26310BA0003D6E69 /* SettingsViewController.swift in Sources */,
 				7902A72F261D72BF008326EE /* EqpItemSubViewController.swift in Sources */,
 				7902A719261D71A7008326EE /* AppDelegate.swift in Sources */,
+				796411ED26324CE200E194D6 /* Alert.swift in Sources */,
 				790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */,
 				7902A73A261D7BB9008326EE /* TabBarController.swift in Sources */,
 				7902A736261D772E008326EE /* EqpInspSingleton.swift in Sources */,
+				7939518126310DD7003D6E69 /* Settings.swift in Sources */,
 				7902A71B261D71A7008326EE /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

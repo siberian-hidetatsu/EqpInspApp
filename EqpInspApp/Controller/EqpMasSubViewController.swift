@@ -104,7 +104,7 @@ class EqpMasSubViewController: UIViewController,UITableViewDataSource,UITableVie
         }
         //URLを生成
         let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
-        let application = "WebApplication1"
+        let application = EqpInspSingleton.shared.settings.appName!
         //let service = "api/Employees"
         let service = "eqpapi/EqpInsps"
         //var parameter = eqpType.text!

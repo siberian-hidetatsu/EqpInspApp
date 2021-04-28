@@ -10,4 +10,5 @@ import Foundation
 struct Settings {
     var server:String?
     var timeoutInterval:TimeInterval?
+    var appName:String?
 }

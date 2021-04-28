@@ -37,8 +37,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             timeoutInterval = 10
         }
         
+        // アプリケーション名
+        let appName:String
+        if let _appName = UserDefaults.standard.string(forKey: "settings.appName") {
+            print(_appName)
+            appName = _appName
+        } else {
+            appName = "EqpInspService"
+        }
+        
         EqpInspSingleton.shared.settings.server = server
         EqpInspSingleton.shared.settings.timeoutInterval = timeoutInterval
+        EqpInspSingleton.shared.settings.appName = appName
         return true
     }
 

@@ -100,7 +100,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 
                 //URLを生成
                 let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
-                let application = "WebApplication1"
+                let application = EqpInspSingleton.shared.settings.appName!
                 let service = "eqpapi/EqpTypeIds"
                 let _stdate = date.text!
                 let _interval = interval.text!
@@ -314,7 +314,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         
         //URLを生成
         let server = "http://\(EqpInspSingleton.shared.settings.server!)"   // 192.168.1.9
-        let application = "WebApplication1"
+        let application = EqpInspSingleton.shared.settings.appName!
         let service = "eqpapi/EqpInspSubLists"
         // Swift で日本語を含む URL を扱う　https://qiita.com/yum_fishing/items/db029c097197e6b27fba
         //let _eqptype = eqpType.text!.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)!

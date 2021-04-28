@@ -11,14 +11,19 @@ class SettingsViewController: UIViewController {
     
     @IBOutlet weak var server: UITextField!
     @IBOutlet weak var timeoutInterval: UITextField!
+    @IBOutlet weak var appName: UITextField!
+    @IBOutlet weak var saveButton: UIButton!
+    @IBOutlet weak var initializeButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        
+        saveButton.layer.cornerRadius = 5
+        initializeButton.layer.cornerRadius = 5
     }
     
-
     /*
     // MARK: - Navigation
 
@@ -33,23 +38,36 @@ class SettingsViewController: UIViewController {
         super.viewWillAppear(animated)
         
         server.text = EqpInspSingleton.shared.settings.server
+        
         timeoutInterval.text = String(Int(EqpInspSingleton.shared.settings.timeoutInterval!))
+        
+        appName.text = EqpInspSingleton.shared.settings.appName
     }
 
+    // 保存
     @IBAction func save(_ sender: Any) {
         UserDefaults.standard.setValue(server.text, forKey: "settings.server")
+        UserDefaults.standard.setValue(timeoutInterval.text, forKey: "settings.timeoutInterval")
+        UserDefaults.standard.setValue(appName.text, forKey: "settings.appName")
         
         EqpInspSingleton.shared.settings.server = server.text
         EqpInspSingleton.shared.settings.timeoutInterval = (timeoutInterval.text! as NSString).doubleValue
+        EqpInspSingleton.shared.settings.appName = appName.text
     }
     
+    // 初期化
     @IBAction func initialize(_ sender: Any) {
         UserDefaults.standard.removeObject(forKey: "settings.server")
+        UserDefaults.standard.removeObject(forKey: "settings.timeoutInterval")
+        UserDefaults.standard.removeObject(forKey: "settings.appName")
         
         server.text = "192.168.1.9"
         EqpInspSingleton.shared.settings.server = server.text
         
         timeoutInterval.text = "10"
         EqpInspSingleton.shared.settings.timeoutInterval = (timeoutInterval.text! as NSString).doubleValue
+        
+        appName.text = "EqpInspService"
+        EqpInspSingleton.shared.settings.appName = appName.text
     }
 }

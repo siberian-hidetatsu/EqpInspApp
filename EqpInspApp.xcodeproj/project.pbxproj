@@ -21,7 +21,7 @@
 		790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790E1C87261FE46C0080D402 /* EqpInspEntity.swift */; };
 		7939517E26310BA0003D6E69 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7939517D26310BA0003D6E69 /* SettingsViewController.swift */; };
 		7939518126310DD7003D6E69 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7939518026310DD7003D6E69 /* Settings.swift */; };
-		796411ED26324CE200E194D6 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796411EC26324CE200E194D6 /* Alert.swift */; };
+		796411ED26324CE200E194D6 /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = 796411EC26324CE200E194D6 /* Util.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +41,7 @@
 		790E1C87261FE46C0080D402 /* EqpInspEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EqpInspEntity.swift; sourceTree = "<group>"; };
 		7939517D26310BA0003D6E69 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		7939518026310DD7003D6E69 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		796411EC26324CE200E194D6 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		796411EC26324CE200E194D6 /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +121,7 @@
 		796411EB26324CA500E194D6 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				796411EC26324CE200E194D6 /* Alert.swift */,
+				796411EC26324CE200E194D6 /* Util.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -202,7 +202,7 @@
 				7939517E26310BA0003D6E69 /* SettingsViewController.swift in Sources */,
 				7902A72F261D72BF008326EE /* EqpItemSubViewController.swift in Sources */,
 				7902A719261D71A7008326EE /* AppDelegate.swift in Sources */,
-				796411ED26324CE200E194D6 /* Alert.swift in Sources */,
+				796411ED26324CE200E194D6 /* Util.swift in Sources */,
 				790E1C88261FE46C0080D402 /* EqpInspEntity.swift in Sources */,
 				7902A73A261D7BB9008326EE /* TabBarController.swift in Sources */,
 				7902A736261D772E008326EE /* EqpInspSingleton.swift in Sources */,

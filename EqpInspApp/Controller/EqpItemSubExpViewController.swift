@@ -40,6 +40,30 @@ class EqpItemSubExpViewController: UIViewController {
         GetData()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        // 画面回転を検知
+        NotificationCenter.default.addObserver(self,
+                                               selector:#selector(didChangeOrientation(_:)),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
+
+        scrollView.frame.size = CGSize(width: view.frame.width, height: view.frame.height)
+    }
+    
+    @objc private func didChangeOrientation(_ notification: Notification) {
+        scrollView.frame.size = CGSize(width: view.frame.width, height: view.frame.height)
+        
+        removeAllSubviews(parentView: scrollView)
+        GetData()
+    }
+    
+    func removeAllSubviews(parentView: UIView){
+        let subviews = parentView.subviews
+        for subview in subviews {
+            subview.removeFromSuperview()
+        }
+    }
+
     func GetData() {
         // 【徹底解説】UIScrollViewクラス　その1
         // https://qiita.com/ynakaDream/items/960899183c38949c2ab0
@@ -49,6 +73,10 @@ class EqpItemSubExpViewController: UIViewController {
 
         let x = 10, width = 200, height = 20
         var y = 100
+        
+        if UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? true {
+            y = 50
+        }
         
         textView.text = ""
 
@@ -62,6 +90,7 @@ class EqpItemSubExpViewController: UIViewController {
                     continue
                 }
                 
+                // 点検項目名(ITEMNAME)
                 let itemNameLabel = UILabel()
                 itemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 itemNameLabel.text = eqpInspItem.ItemName
@@ -69,18 +98,21 @@ class EqpItemSubExpViewController: UIViewController {
                 contentsView.addSubview(itemNameLabel)
                 y += 20
                 
+                // サブ点検項目(SUBITEMNAME)
                 let subItemNameLabel = UILabel()
                 subItemNameLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 subItemNameLabel.text = eqpInspSubItem.SubItemName
                 contentsView.addSubview(subItemNameLabel)
                 y += 20
                 
+                // 判定基準(JUDGEMENTCRITERIA)
                 let judgementCriteriaLabel = UILabel()
                 judgementCriteriaLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 judgementCriteriaLabel.text = eqpInspSubItem.JudgementCriteria
                 contentsView.addSubview(judgementCriteriaLabel)
                 y += 20
                 
+                // 点検箇所(INSPECTIONPOINT)
                 let inspectionPointLabel = UILabel()
                 inspectionPointLabel.frame = CGRect(x: x, y: y, width: Int(view.frame.width) - 20, height: height)
                 inspectionPointLabel.text = eqpInspSubItem.InspectionPoint
@@ -92,6 +124,7 @@ class EqpItemSubExpViewController: UIViewController {
                     y += 20
                 }
                 
+                // サブ点検画像(SUBITEMIMG)
                 if !eqpInspSubItem.SubItemImg.isEmpty {
                     let imageData = NSData(base64Encoded: eqpInspSubItem.SubItemImg)
                     let image = UIImage(data: imageData! as Data)
@@ -104,11 +137,13 @@ class EqpItemSubExpViewController: UIViewController {
                     y += (Int(subItemImg.image!.size.height) + 20)
                 }
                 
+                // 処置前項目のタイトル(BEFTITLE)
                 let befTitleLabel = UILabel()
                 befTitleLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
                 befTitleLabel.text = eqpInspSubItem.BefTitle
                 contentsView.addSubview(befTitleLabel)
                 
+                // 処置後項目のタイトル(AFTTITLE)
                 let aftTitleLabel = UILabel()
                 aftTitleLabel.frame = CGRect(x: x + 210, y: y, width: width / 2, height: height)
                 aftTitleLabel.text = eqpInspSubItem.AftTitle
@@ -116,11 +151,13 @@ class EqpItemSubExpViewController: UIViewController {
                 y += 21
 
                 for eqpInspSubExpItem in eqpInspSubItem.EqpInspSubExpItems {
+                    // 項目ラベル(ITEMLABEL)
                     let itemLabelLabel = UILabel()
                     itemLabelLabel.frame = CGRect(x: x, y: y, width: width / 2, height: height)
                     itemLabelLabel.text = eqpInspSubExpItem.ItemLabel
                     contentsView.addSubview(itemLabelLabel)
             
+                    // 測定値(処置前)(BEFVALUE)
                     let befValueLabel = UILabel()
                     befValueLabel.frame = CGRect(x: x + 100, y: y, width: width / 2, height: height)
                     befValueLabel.text = eqpInspSubExpItem.BefValue
@@ -128,6 +165,7 @@ class EqpItemSubExpViewController: UIViewController {
                     befValueLabel.layer.borderColor = UIColor.lightGray.cgColor
                     contentsView.addSubview(befValueLabel)
             
+                    // 測定値(処置後)(AFTVALUE)
                     let aftValueLabel = UILabel()
                     aftValueLabel.frame = CGRect(x: x + 210, y: y, width: width / 2, height: height)
                     aftValueLabel.text = eqpInspSubExpItem.AftValue
@@ -137,7 +175,10 @@ class EqpItemSubExpViewController: UIViewController {
                     y += 21
                 }
         
+                y += 5
+                // 判定(処置前)(BEFRESULT)
                 SetResultLabel(view: contentsView, x: x + 100, y: y, width: width / 2, height: height, result: eqpInspSubItem.BefResult)
+                // 判定(処置後)(AFTRESULT)
                 SetResultLabel(view: contentsView, x: x + 210, y: y, width: width / 2, height: height, result: eqpInspSubItem.AftResult)
                 y += 21
             }
@@ -145,12 +186,29 @@ class EqpItemSubExpViewController: UIViewController {
         
         // scrollViewにcontentsViewを配置させる
         var contentsHeight = y
-        let screen_height = UIScreen.main.bounds.size.height
-        print("screen : \(UIScreen.main.bounds.size)")
-        if CGFloat(contentsHeight) > screen_height {
-            contentsHeight += 150
+        
+        // ios : Swiftでデバイスの向きを取得する
+        // https://www.fixes.pub/program/253873.html
+        if UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? true {
+            print("Portrait")
+            let screen_height = UIScreen.main.bounds.size.height
+            print("screen : \(UIScreen.main.bounds.size)")
+            if CGFloat(contentsHeight) > screen_height {
+                contentsHeight += 150
+            }
+            contentsView.frame = CGRect(x: 0, y: 0, width: Int(UIScreen.main.bounds.width), height: contentsHeight)
+        } else {
+            print("Landscape")
+            contentsHeight += 60 // ちょっと余裕を持たせる
+            let screen_height = UIScreen.main.bounds.size.height
+            print("screen : \(UIScreen.main.bounds.size)")
+            if CGFloat(contentsHeight) >= screen_height {
+                contentsHeight += /*Int(UIScreen.main.bounds.height) + */40
+            }
+            contentsView.frame = CGRect(x: 0, y: 0, width: Int(UIScreen.main.bounds.height), height: contentsHeight/*1000*/)
+            print("contentView : \(contentsView.frame.size)")
         }
-        contentsView.frame = CGRect(x: 0, y: 0, width: Int(UIScreen.main.bounds.width), height: contentsHeight)
+        
         scrollView.addSubview(contentsView)
 
         // scrollViewにcontentsViewのサイズを教える
@@ -279,6 +337,7 @@ class EqpItemSubExpViewController: UIViewController {
         let resultLabel = UILabel()
         resultLabel.frame = CGRect(x: x, y: y, width: width, height: height)
         resultLabel.text = result
+        resultLabel.font = UIFont.boldSystemFont(ofSize: 16)
         
         if result == "OK" {
             resultLabel.textColor = UIColor.blue

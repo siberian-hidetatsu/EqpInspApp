@@ -19,10 +19,14 @@ struct EqpInspSubItemCellData {
 
 class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableViewDelegate,UIPickerViewDelegate, UIPickerViewDataSource {
     
+    @IBOutlet weak var eqpTypeLabel: UILabel!
     @IBOutlet weak var eqpType: UITextField!
+    @IBOutlet weak var eqpIDLabel: UILabel!
     @IBOutlet weak var eqpID: UITextField!
+    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var date: UITextField!
     @IBOutlet weak var interval: UITextField!
+    @IBOutlet weak var getButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var indicator: UIActivityIndicatorView!
@@ -33,6 +37,10 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
     var eqpTypeArray = ["Orange", "Grape", "Banana"]/*[String]()*/
 
     var resultText : String = ""
+    
+    var yOffsetHeight: Int = 0
+    
+    static var viewMoved: Bool = false
     
     /* セクションを使用しない場合
     var coupons: [[String: String]] = [] { //パースした[String: String]型のクーポンデータを格納するメンバ変数
@@ -72,6 +80,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         date.text = "20200819"
         interval.text = "D"*/
         
+        getButton.layer.cornerRadius = 5
+        
         textView.text = ""
         
         //【Swift】 UITextFieldに文字数制限を設ける方法
@@ -82,6 +92,109 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         createPickerView()
         
         indicator.center = self.view.center
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // 【Swift】端末の回転を検知してUITableViewを再描画する方法
+        // https://cpoint-lab.co.jp/article/201912/13075/
+        // 画面回転を検知
+        NotificationCenter.default.addObserver(self,
+                                               selector:#selector(didChangeOrientation(_:)),
+                                               name: UIDevice.orientationDidChangeNotification,
+                                               object: nil)
+        
+        //上部のSafeArea
+        let safeAreaTop = self.view.safeAreaInsets.top
+        print("safeAreaTop: \(safeAreaTop)")
+        
+        // ナビゲーションバーの高さを取得
+        let navBarHeight = self.navigationController?.navigationBar.frame.size.height
+        print("navBarHeight: \(navBarHeight!)")
+        
+        yOffsetHeight = Int(navBarHeight!)
+
+        //下部のSafeArea
+        let safeAreaBottom = self.view.safeAreaInsets.bottom
+        print("safeAreaBottom: \(safeAreaBottom)")
+        
+        if UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? true {
+            if ( !EqpItemSubViewController.viewMoved ) {
+                moveView(uiView: eqpTypeLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpType, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpIDLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpID, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: dateLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: date, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: interval, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: getButton, xOffset: -20, yOffset: -yOffsetHeight)
+                //moveView(uiView: tableView, xOffset: 0, yOffset: -yOffsetHeight)
+                EqpItemSubViewController.viewMoved = true
+            }
+            
+            //tableView.layer.frame = CGRect(x: tableView.layer.frame.origin.x, y: tableView.layer.frame.origin.y, width: tableView.layer.bounds.width, height: 180/*tableView.layer.bounds.height*/)
+            tableView.frame = CGRect(x: 320, y: yOffsetHeight + 10, width: 520, height: Int(view.frame.height) - 140)
+
+            //tableView.frame.size = CGSize(width: tableView.layer.frame.width - 1/*view.frame.width - 30*/, height: tableView.frame.height)
+            tableView.setNeedsDisplay()
+            tableView.reloadData()
+        }
+    }
+    
+    // 画面が回転した
+    @objc private func didChangeOrientation(_ notification: Notification) {
+        //画面回転時の処理
+        tableView.frame.size = CGSize(width: view.frame.width - 30, height: view.frame.height)
+        tableView.setNeedsDisplay()
+        tableView.reloadData()
+        
+        //var tableViewHeight = 0
+        
+        if UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? true {
+            if (EqpItemSubViewController.viewMoved) {
+                moveView(uiView: eqpTypeLabel, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: eqpType, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: eqpIDLabel, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: eqpID, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: dateLabel, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: date, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: interval, xOffset: 0, yOffset: +yOffsetHeight)
+                moveView(uiView: getButton, xOffset: +20, yOffset: +yOffsetHeight)
+                //moveView(uiView: tableView, xOffset: 0, yOffset: +yOffsetHeight)
+                EqpItemSubViewController.viewMoved = false
+            }
+            
+            //tableViewHeight = 500
+            tableView.frame = CGRect(x: 20, y: 244, width: Int(view.frame.width) - 40, height: 552/*Int(view.frame.height) - 244 - 100*/)
+            print("tableView.frame: \(tableView.frame)")
+        }
+        else {
+            if ( !EqpItemSubViewController.viewMoved ) {
+                moveView(uiView: eqpTypeLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpType, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpIDLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: eqpID, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: dateLabel, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: date, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: interval, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: getButton, xOffset: -20, yOffset: -yOffsetHeight)
+                //moveView(uiView: tableView, xOffset: 0, yOffset: -yOffsetHeight)
+                EqpItemSubViewController.viewMoved = true
+            }
+            
+            //tableViewHeight = 180
+            tableView.frame = CGRect(x: 320, y: yOffsetHeight + 10, width: 520, height: Int(view.frame.height) - 140)
+        }
+        
+        //tableView.layer.frame = CGRect(x: tableView.layer.frame.origin.x, y: tableView.layer.frame.origin.y, width: tableView.layer.bounds.width, height: CGFloat(tableViewHeight)/*tableView.layer.bounds.height*/)
+    }
+    
+    // ビューを移動する
+    func moveView(uiView: UIView, xOffset: Int, yOffset: Int, widthOffset: Int = 0, heightOffset: Int = 0)
+    {
+        uiView.frame = CGRect(x: uiView.frame.origin.x + CGFloat(xOffset),
+                              y: uiView.frame.origin.y + CGFloat(yOffset),
+                              width: uiView.layer.bounds.width + CGFloat(widthOffset),
+                              height: uiView.layer.bounds.height + CGFloat(heightOffset))
     }
     
     //MARK: - 日付のオブザーバ
@@ -273,10 +386,12 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
         
         (cell.viewWithTag(1) as! UILabel).isHidden = true
         
+        // SUBITEMNAME サブ点検項目名
         let subItemNameLabel = cell.viewWithTag(2) as! UILabel
         subItemNameLabel.text = eqpInspSubItemCellData.SubItemName
         subItemNameLabel.frame = CGRect(x: subItemNameLabel.frame.origin.x, y: 12, width: subItemNameLabel.frame.width, height: subItemNameLabel.frame.height)
 
+        // JUDGEMENTCRITERIA 判定基準
         let judgementCriteriaLabel = cell.viewWithTag(3) as! UILabel
         judgementCriteriaLabel.frame = CGRect(x: judgementCriteriaLabel.frame.origin.x, y: 38, width: judgementCriteriaLabel.frame.width, height: judgementCriteriaLabel.frame.height)
         judgementCriteriaLabel.text = ""
@@ -284,8 +399,17 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
             judgementCriteriaLabel.text = "(" + eqpInspSubItemCellData.JudgementCriteria! + ")"
         }
 
+        // INSPECTIONPOINT 点検箇所
         let inspectionPointLabel = cell.viewWithTag(4) as! UILabel
-        inspectionPointLabel.frame = CGRect(x: inspectionPointLabel.frame.origin.x, y: 38, width: inspectionPointLabel.frame.width, height: inspectionPointLabel.frame.height)
+        var inspectionPointLabelWidth = inspectionPointLabel.frame.width
+        if UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? true {
+            inspectionPointLabelWidth = 200
+        }
+        else {
+            inspectionPointLabelWidth = 200 + 300
+        }
+        //print("inspectionPointLabelWidth: \(inspectionPointLabelWidth)")
+        inspectionPointLabel.frame = CGRect(x: inspectionPointLabel.frame.origin.x, y: 38, width: inspectionPointLabelWidth, height: inspectionPointLabel.frame.height)
         inspectionPointLabel.text = ""
         if !eqpInspSubItemCellData.InspectionPoint!.isEmpty {
             inspectionPointLabel.text = eqpInspSubItemCellData.InspectionPoint
@@ -299,8 +423,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return 80
-        }
+        return 80
+    }
 
     //MARK: -
     @IBAction func ButtonClick(_ sender: Any) {

@@ -26,6 +26,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var date: UITextField!
     @IBOutlet weak var interval: UITextField!
+    @IBOutlet weak var inspectionName: UITextField!
     @IBOutlet weak var getButton: UIButton!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var textView: UITextView!
@@ -126,6 +127,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 moveView(uiView: dateLabel, xOffset: 0, yOffset: -yOffsetHeight)
                 moveView(uiView: date, xOffset: 0, yOffset: -yOffsetHeight)
                 moveView(uiView: interval, xOffset: 0, yOffset: -yOffsetHeight)
+                moveView(uiView: inspectionName, xOffset: 0, yOffset: -yOffsetHeight)
                 moveView(uiView: getButton, xOffset: -20, yOffset: -yOffsetHeight)
                 //moveView(uiView: tableView, xOffset: 0, yOffset: -yOffsetHeight)
                 EqpItemSubViewController.viewMoved = true
@@ -159,6 +161,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 moveView(uiView: date, xOffset: 0, yOffset: +yOffsetHeight)
                 moveView(uiView: interval, xOffset: 0, yOffset: +yOffsetHeight)
                 moveView(uiView: getButton, xOffset: +20, yOffset: +yOffsetHeight)
+                moveView(uiView: inspectionName, xOffset: 0, yOffset: +yOffsetHeight)
                 //moveView(uiView: tableView, xOffset: 0, yOffset: +yOffsetHeight)
                 EqpItemSubViewController.viewMoved = false
             }
@@ -177,6 +180,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 moveView(uiView: date, xOffset: 0, yOffset: -yOffsetHeight)
                 moveView(uiView: interval, xOffset: 0, yOffset: -yOffsetHeight)
                 moveView(uiView: getButton, xOffset: -20, yOffset: -yOffsetHeight)
+                moveView(uiView: inspectionName, xOffset: 0, yOffset: -yOffsetHeight)
                 //moveView(uiView: tableView, xOffset: 0, yOffset: -yOffsetHeight)
                 EqpItemSubViewController.viewMoved = true
             }
@@ -461,6 +465,12 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 
                 guard let data = data else { return }
                 print(data)
+                
+                // Convert Data to String in Swift 3
+                // https://stackoverflow.com/questions/40184468/convert-data-to-string-in-swift-3/40185083#
+                // UltraEdit 解析用
+                let returnData = String(data: data, encoding: .utf8)
+                print(returnData!)
                 //let object = try JSONSerialization.jsonObject(with: data, options: [])  // DataをJsonに変換
                 //print(object)
                 
@@ -499,11 +509,14 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 }
                 */
                 
-                var eqpInspItems:[EqpInsp.EqpInspItem] = []
-                
+                //var eqpInspItems:[EqpInsp.EqpInspItem] = [] /* 旧フォーマット */
+                var equipInspec: EqpInsp.EquipInspec
+
                 do {
-                    eqpInspItems = try JSONDecoder().decode([EqpInsp.EqpInspItem].self, from: data)
-                    print(eqpInspItems)
+                    //eqpInspItems = try JSONDecoder().decode([EqpInsp.EqpInspItem].self, from: data) /* 旧フォーマット */
+                    //print(eqpInspItems)
+                    equipInspec = try JSONDecoder().decode(EqpInsp.EquipInspec.self, from: data)
+                    print(equipInspec)
                 /*} catch let error as NSError {
                     print("【エラーが発生しました : \(error)】")
                 }*/
@@ -513,7 +526,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 }
 
                 // シングルトンにデータを格納する
-                EqpInspSingleton.shared.eqpInspItems = eqpInspItems
+                //EqpInspSingleton.shared.eqpInspItems = eqpInspItems /* 旧フォーマット */
+                EqpInspSingleton.shared.eqpInspItems = equipInspec.EqpInspItems
 
                 /* セクションを使用しない場合
                 var _couponData:[[String:String]] = []
@@ -538,7 +552,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                 var _mySections:[String] = []
                 self.twoDimArray = [[EqpInspSubItemCellData]]()
                 
-                for eqpInspItem in eqpInspItems {
+                //for eqpInspItem in eqpInspItems { /* 旧フォーマット */
+                for eqpInspItem in equipInspec.EqpInspItems {
                     _mySections.append(eqpInspItem.ItemName)
                     
                     // Swiftで多次元配列を使う場合
@@ -547,7 +562,7 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                     
                     for eqpInspSubItem in eqpInspItem.EqpInspSubItems {
                         var eqpInspSubItemCellData = EqpInspSubItemCellData()
-                        eqpInspSubItemCellData.EqpType = eqpInspItem.EqpType
+                        //eqpInspSubItemCellData.EqpType = eqpInspItem.EqpType /* 旧フォーマット */
                         eqpInspSubItemCellData.ItemCode = eqpInspItem.ItemCode
                         eqpInspSubItemCellData.SeqNum = eqpInspSubItem.SeqNum
                         eqpInspSubItemCellData.SubItemName = eqpInspSubItem.SubItemName
@@ -565,6 +580,8 @@ class EqpItemSubViewController: UIViewController,UITableViewDataSource,UITableVi
                     
                     //self.mySections = []
                     //self.tableView.reloadData()
+                    
+                    self.inspectionName.text = equipInspec.Result + "@" + equipInspec.InspectionName
                     
                     self.mySections = _mySections
                     

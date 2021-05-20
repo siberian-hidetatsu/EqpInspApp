@@ -29,10 +29,17 @@ struct EqpInsp: Codable {
     }
     
     struct EqpInspItem: Codable {
-        var EqpType:String
+        //var EqpType:String  /* 旧フォーマット */
         var ItemCode:String
         var ItemName:String
         var EqpInspSubItems:[EqpInspSubItem]
+    }
+    
+    struct EquipInspec: Codable {
+        var EqpType:String
+        var InspectionName:String
+        var Result:String
+        var EqpInspItems:[EqpInspItem]
     }
     
     struct EqpTypeId: Codable {
